@@ -8,24 +8,150 @@ import {
   SiEpson,
 } from "react-icons/si";
 import { FaMicrosoft } from "react-icons/fa";
-import { ShieldCheck, Video, Printer, Zap } from "lucide-react";
+import { Zap, ShieldCheck, Printer, Video } from "lucide-react";
 
+// Primary IT partner brands (main row)
 const PRIMARY_BRANDS = [
-  { name: "HP", Icon: SiHp, badge: "Regional Distributor" },
-  { name: "Lenovo", Icon: SiLenovo, badge: "Authorized Partner" },
-  { name: "Dell", Icon: SiDell, badge: "Authorized Partner" },
-  { name: "Intel", Icon: SiIntel, badge: "18+ yr Channel Partner" },
-  { name: "Microsoft", Icon: FaMicrosoft, badge: "Authorized Dealer" },
-  { name: "AMD", Icon: SiAmd, badge: "Authorized Dealer" },
+  {
+    name: "HP",
+    badge: "Regional Distributor",
+    flagship: true,
+    render: () => <SiHp className="w-16 h-16 md:w-24 md:h-24" />,
+  },
+  {
+    name: "Lenovo",
+    badge: "Authorized Partner",
+    render: () => <SiLenovo className="w-12 h-12" />,
+  },
+  {
+    name: "Dell",
+    badge: "Authorized Partner",
+    render: () => <SiDell className="w-12 h-12" />,
+  },
+  {
+    name: "Intel",
+    badge: "18+ yr Channel Partner",
+    render: () => <SiIntel className="w-12 h-12" />,
+  },
+  {
+    name: "Microsoft",
+    badge: "Authorized Dealer",
+    render: () => <FaMicrosoft className="w-12 h-12" />,
+  },
+  {
+    name: "AMD",
+    badge: "Authorized Dealer",
+    render: () => <SiAmd className="w-12 h-12" />,
+  },
 ];
 
-const SURVEILLANCE = [
-  { name: "CP Plus", tag: "Regional Distributor" },
-  { name: "Hikvision", tag: "Regional Distributor" },
-  { name: "Dahua", tag: "Regional Distributor" },
+// Surveillance brands — Regional Distributor status
+const SURVEILLANCE_BRANDS = [
+  {
+    name: "CP Plus",
+    badge: "Regional Distributor",
+    // Stylish typographic mark — looks like a real logo
+    render: () => (
+      <div className="flex items-center font-display font-extrabold tracking-tight leading-none">
+        <span className="text-[#E11D2A] text-[34px]">CP</span>
+        <span className="ml-1 w-7 h-7 bg-[#E11D2A] text-white flex items-center justify-center text-xl rounded-sm">
+          +
+        </span>
+      </div>
+    ),
+  },
+  {
+    name: "Hikvision",
+    badge: "Regional Distributor",
+    render: () => (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Hikvision_logo.svg/512px-Hikvision_logo.svg.png"
+        alt="Hikvision"
+        loading="lazy"
+        className="h-10 object-contain"
+        onError={(e) => {
+          e.currentTarget.replaceWith(
+            Object.assign(document.createElement("span"), {
+              textContent: "Hikvision",
+              className: "font-display font-bold text-2xl text-[#D71921]",
+            })
+          );
+        }}
+      />
+    ),
+  },
+  {
+    name: "Dahua",
+    badge: "Regional Distributor",
+    render: () => (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Dahua_Technology_logo.svg/512px-Dahua_Technology_logo.svg.png"
+        alt="Dahua Technology"
+        loading="lazy"
+        className="h-9 object-contain"
+        onError={(e) => {
+          e.currentTarget.replaceWith(
+            Object.assign(document.createElement("span"), {
+              textContent: "Dahua",
+              className: "font-display font-bold text-2xl text-[#E31E24]",
+            })
+          );
+        }}
+      />
+    ),
+  },
 ];
 
-const OTHERS = ["Epson", "Numeric", "Artis", "Quick Heal"];
+// Other brands
+const OTHER_BRANDS = [
+  {
+    name: "Epson",
+    badge: "Authorized Dealer",
+    render: () => <SiEpson className="w-14 h-14 text-[#003399]" />,
+  },
+  {
+    name: "Quick Heal",
+    badge: "Authorized Dealer",
+    render: () => (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Quick_Heal_Technologies_Logo.svg/512px-Quick_Heal_Technologies_Logo.svg.png"
+        alt="Quick Heal"
+        loading="lazy"
+        className="h-9 object-contain"
+        onError={(e) => {
+          e.currentTarget.replaceWith(
+            Object.assign(document.createElement("span"), {
+              textContent: "Quick Heal",
+              className: "font-display font-bold text-2xl text-[#E4002B]",
+            })
+          );
+        }}
+      />
+    ),
+  },
+  {
+    name: "Numeric",
+    badge: "Authorized Dealer",
+    // Typographic mark mirroring Numeric UPS branding
+    render: () => (
+      <div className="font-display font-black tracking-tight text-[30px] leading-none flex items-baseline">
+        <span className="text-[#0057B8]">numeric</span>
+        <span className="ml-0.5 w-2 h-2 bg-[#E30613] rounded-full self-end mb-1.5" />
+      </div>
+    ),
+  },
+  {
+    name: "Artis",
+    badge: "Authorized Dealer",
+    render: () => (
+      <div className="font-display italic font-extrabold tracking-tight text-[32px] leading-none">
+        <span className="text-[#0F172A]">Art</span>
+        <span className="text-[#0055FF]">i</span>
+        <span className="text-[#0F172A]">s</span>
+      </div>
+    ),
+  },
+];
 
 const DISTRIBUTORS = [
   "Savex Technologies",
@@ -33,6 +159,45 @@ const DISTRIBUTORS = [
   "Redington India",
   "Rashi Peripherals (RP Tech)",
 ];
+
+function BrandTile({ brand, variant = "light", accent = "#0055FF", testId }) {
+  const isDark = variant === "dark";
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.4 }}
+      className={`group relative p-5 md:p-6 border-r border-b border-[#E2E8F0] flex flex-col justify-between min-h-[150px] transition-all duration-300 ${
+        isDark
+          ? "bg-[#0A0F1C] text-white hover:bg-[#0F172A]"
+          : "bg-white hover:bg-[#F8FAFC]"
+      }`}
+      data-testid={testId || `brand-${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
+    >
+      <div className="flex items-center justify-start h-16">{brand.render()}</div>
+      <div>
+        <div
+          className={`font-mono text-[10px] uppercase tracking-[0.22em] ${
+            isDark ? "text-white/50" : "text-[#475569]"
+          }`}
+        >
+          {brand.badge}
+        </div>
+        <div
+          className="mt-1 font-display font-semibold text-[15px]"
+          style={{ color: isDark ? "#fff" : "#0F172A" }}
+        >
+          {brand.name}
+        </div>
+      </div>
+      <span
+        className="absolute top-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-300"
+        style={{ backgroundColor: accent }}
+      />
+    </motion.div>
+  );
+}
 
 export default function PartnersSection() {
   return (
@@ -47,129 +212,128 @@ export default function PartnersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
-          className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4"
+          className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4"
         >
           <div>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-3">
               <span className="w-10 h-[2px] bg-[#0055FF]" />
               <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-[#0055FF]">
                 03 / Partnerships & Brands
               </span>
             </div>
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.02] tracking-tight max-w-3xl">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.02] tracking-tight max-w-3xl">
               Official partner to the world's biggest tech brands.
             </h2>
           </div>
-          <p className="text-[#475569] max-w-sm text-sm md:text-base">
-            Every product we sell is sourced directly through authorized
-            channels — genuine warranty, verified inventory and OEM pricing.
+          <p className="text-[#475569] max-w-sm text-sm">
+            Every product sourced through authorized channels — genuine
+            warranty, verified inventory and OEM pricing.
           </p>
         </motion.div>
 
-        {/* Primary Brands Bento */}
-        <div
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-t border-l border-[#E2E8F0]"
-          data-testid="partners-grid"
-        >
-          {PRIMARY_BRANDS.map((b, i) => (
-            <motion.div
-              key={b.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className={`group relative p-6 md:p-7 border-r border-b border-[#E2E8F0] bg-white hover:bg-[#0A0F1C] hover:text-white transition-all duration-300 ${
-                b.name === "HP"
-                  ? "md:col-span-2 lg:col-span-2 lg:row-span-2 bg-[#0055FF] text-white hover:bg-[#0044CC]"
-                  : ""
-              }`}
-              data-testid={`brand-${b.name.toLowerCase()}`}
-            >
-              <b.Icon
-                className={`transition-all duration-300 ${
-                  b.name === "HP" ? "w-16 h-16 md:w-24 md:h-24" : "w-12 h-12"
+        {/* Primary IT Brands */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3 text-[#475569]">
+            <Zap className="w-3.5 h-3.5 text-[#0055FF]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em]">
+              IT — Distributors & Authorized Partners
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-t border-l border-[#E2E8F0]">
+            {PRIMARY_BRANDS.map((b) => (
+              <motion.div
+                key={b.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4 }}
+                className={`group relative p-5 md:p-6 border-r border-b border-[#E2E8F0] transition-all duration-300 flex flex-col justify-between min-h-[150px] ${
+                  b.flagship
+                    ? "md:col-span-2 lg:col-span-2 lg:row-span-2 bg-[#0055FF] text-white hover:bg-[#0044CC]"
+                    : "bg-white hover:bg-[#0A0F1C] hover:text-white"
                 }`}
-              />
-              <div
-                className={`mt-6 font-mono text-[10px] uppercase tracking-[0.22em] ${
-                  b.name === "HP" ? "text-white/70" : "text-[#475569] group-hover:text-white/60"
-                }`}
+                data-testid={`brand-${b.name.toLowerCase()}`}
               >
-                {b.badge}
-              </div>
-              <div
-                className={`mt-1 font-display font-semibold ${
-                  b.name === "HP" ? "text-2xl md:text-3xl" : "text-lg"
-                }`}
-              >
-                {b.name}
-              </div>
-              {b.name === "HP" && (
-                <div className="mt-6 md:mt-10 inline-flex items-center gap-2 bg-white text-[#0055FF] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em]">
-                  <Zap className="w-3 h-3" /> Flagship partnership
+                {b.render()}
+                <div>
+                  <div
+                    className={`font-mono text-[10px] uppercase tracking-[0.22em] ${
+                      b.flagship
+                        ? "text-white/70"
+                        : "text-[#475569] group-hover:text-white/60"
+                    }`}
+                  >
+                    {b.badge}
+                  </div>
+                  <div
+                    className={`mt-1 font-display font-semibold ${
+                      b.flagship ? "text-2xl md:text-3xl" : "text-lg"
+                    }`}
+                  >
+                    {b.name}
+                  </div>
+                  {b.flagship && (
+                    <div className="mt-6 md:mt-10 inline-flex items-center gap-2 bg-white text-[#0055FF] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                      <Zap className="w-3 h-3" /> Flagship partnership
+                    </div>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* Surveillance + Others */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border-l border-r border-b border-[#E2E8F0]">
-          <div className="p-6 md:p-7 bg-white border-b lg:border-b-0 lg:border-r border-[#E2E8F0]">
-            <div className="flex items-center gap-2 text-[#0055FF] mb-3">
-              <Video className="w-4 h-4" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
-                Surveillance — Regional Distributor
+        {/* Surveillance */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3 text-[#475569]">
+            <Video className="w-3.5 h-3.5 text-[#0055FF]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em]">
+              Surveillance — Regional Distributors
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 border-t border-l border-[#E2E8F0]">
+            {SURVEILLANCE_BRANDS.map((b) => (
+              <BrandTile key={b.name} brand={b} accent="#0055FF" />
+            ))}
+          </div>
+        </div>
+
+        {/* Other brands + distributors */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-3 text-[#475569]">
+              <Printer className="w-3.5 h-3.5 text-[#0055FF]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.24em]">
+                Other Authorized Brands
               </span>
             </div>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {SURVEILLANCE.map((s) => (
-                <span
-                  key={s.name}
-                  className="inline-flex items-center gap-2 border border-[#E2E8F0] px-3 py-2 font-display font-medium text-[#0F172A]"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#0055FF]" />
-                  {s.name}
-                </span>
+            <div className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-[#E2E8F0]">
+              {OTHER_BRANDS.map((b) => (
+                <BrandTile key={b.name} brand={b} accent="#06B6D4" />
               ))}
             </div>
           </div>
-          <div className="p-6 md:p-7 bg-white border-b lg:border-b-0 lg:border-r border-[#E2E8F0]">
-            <div className="flex items-center gap-2 text-[#0055FF] mb-3">
-              <Printer className="w-4 h-4" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
-                Other Brands
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {OTHERS.map((s) => (
-                <span
-                  key={s}
-                  className="border border-[#E2E8F0] px-3 py-2 font-display font-medium text-[#0F172A] flex items-center gap-2"
-                >
-                  {s === "Epson" ? <SiEpson className="w-4 h-4" /> : null}
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="p-6 md:p-7 bg-[#0A0F1C] text-white">
-            <div className="flex items-center gap-2 text-[#06B6D4] mb-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
+
+          <div className="lg:pl-6 mt-6 lg:mt-0">
+            <div className="flex items-center gap-2 mb-3 text-[#475569]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#06B6D4]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.24em]">
                 National Distributors
               </span>
             </div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {DISTRIBUTORS.map((d) => (
-                <li
-                  key={d}
-                  className="flex items-center gap-2 border-b border-white/10 pb-2 last:border-0"
-                >
-                  <span className="w-1 h-1 bg-[#06B6D4]" />
-                  {d}
-                </li>
-              ))}
-            </ul>
+            <div className="bg-[#0A0F1C] text-white p-6 h-full">
+              <ul className="space-y-3 text-sm">
+                {DISTRIBUTORS.map((d) => (
+                  <li
+                    key={d}
+                    className="flex items-center gap-3 border-b border-white/10 pb-2.5 last:border-0"
+                  >
+                    <span className="w-1.5 h-1.5 bg-[#06B6D4]" />
+                    <span className="font-medium">{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
