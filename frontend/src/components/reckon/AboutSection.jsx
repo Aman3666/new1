@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { Award, MapPin, Users } from "lucide-react";
+import shivajiImg from "@/shivaji.jpg";
 
-const OFFICE_IMG =
-  "https://images.unsplash.com/photo-1694702702714-a48c5fabdaf3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDB8fHx8MTc3NjUwMzc1OXww&ixlib=rb-4.1.0&q=85";
-
+const OFFICE_IMG = shivajiImg;
 export default function AboutSection() {
   return (
     <section
